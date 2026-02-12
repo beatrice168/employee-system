@@ -38,7 +38,19 @@ def fetch_employees():
 
 def update(id,new_name,new_role,new_phone,new_gender,new_salary):
     mycursor.execute('UPDATE data SET name=%s, role=%s, phone=%s, gender=%s, salary=%s WHERE id=%s',(new_name,new_role,new_phone,new_gender,new_salary,id))
+    conn.commit()
 
 
+def delete(id):
+    mycursor.execute('DELETE FROM data WHERE id=%s',(id))
+    conn.commit()
+
+def search(option, value):
+   mycursor.execute(
+    f"SELECT * FROM data WHERE {option} LIKE %s",
+    ('%' + value + '%',)
+     )   
+   result=mycursor.fetchall()
+   return result
 
 connect_database()

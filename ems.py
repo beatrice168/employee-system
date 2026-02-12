@@ -4,6 +4,35 @@ from tkinter import messagebox, ttk
 import database 
         # FUNTIONS
 
+def search_employee():
+    if searchEntry.get() == "":
+        messagebox.showerror("Error", "Please enter a search term")
+    elif searchBox.get() == "Search by":
+        messagebox.showerror("Error", "Please select a search criteria")
+    else:
+        searched_data=database.search(searchBox.get(),searchEntry.get())
+        tree.delete(*tree.get_children())  
+        for employee in searched_data:
+          tree.insert("",END,values=employee)
+      
+
+
+
+
+def delete_employee():
+    selected_item=tree.selection()
+    if not selected_item:
+        messagebox.showerror("Error", "Please select an employee to delete")
+    else:
+        database.delete(idEntry.get())
+        treeview_data()
+        clear()
+        messagebox.showinfo("Success","Employee deleted successfully")
+
+
+
+
+
 def update_employee():
     selected_item=tree.selection()
     if not selected_item:
@@ -31,7 +60,9 @@ def selection(event):
 
 
 
-def clear():
+def clear(value=False):
+    if value:
+        tree.selection_remove(tree.focus())
     idEntry.delete(0, END)
     nameEntry.delete(0, END)
     phoneEntry.delete(0, END)
@@ -152,7 +183,7 @@ searchBox.set(search_options[0])
 searchEntry=CTkEntry(rightFrame)
 searchEntry.grid(row=0, column=1)
 
-searchButton=CTkButton(rightFrame, text="Search", width=100)
+searchButton=CTkButton(rightFrame, text="Search", width=100, command=search_employee)
 searchButton.grid(row=0, column=2)
 
 showallButton=CTkButton(rightFrame, text="Show All", width=100)
@@ -190,7 +221,7 @@ scrollbar.grid(row=1, column=4,sticky="ns")
 buttonFrame=CTkFrame(window,fg_color="sky blue")
 buttonFrame.grid(row=2, column=0, columnspan=2)
 
-newButton=CTkButton(buttonFrame, text="New Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15)
+newButton=CTkButton(buttonFrame, text="New Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15,command=lambda: clear(True))
 newButton.grid(row=0, column=0,pady=5)
 
 
@@ -200,7 +231,7 @@ addButton.grid(row=0, column=1,pady=5,padx=5)
 updateButton=CTkButton(buttonFrame, text="Update Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15,command=update_employee)
 updateButton.grid(row=0, column=2,pady=5,padx=5)
 
-deleteButton=CTkButton(buttonFrame, text="Delete Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15)
+deleteButton=CTkButton(buttonFrame, text="Delete Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15,command=delete_employee)
 deleteButton.grid(row=0, column=3,pady=5,padx=5)
 
 deleteallButton=CTkButton(buttonFrame, text="Delete All" ,font=("Arial", 18, "bold"), width=160,corner_radius=15)
