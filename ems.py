@@ -4,13 +4,69 @@ from tkinter import messagebox, ttk
 import database 
         # FUNTIONS
 
+def update_employee():
+    selected_item=tree.selection()
+    if not selected_item:
+        messagebox.showerror("Error", "Please select an employee to update")
+    else:
+        database.update(idEntry.get(),nameEntry.get(),roleBox.get(),phoneEntry.get(),genderBox.get(),salaryEntry.get())
+        treeview_data()
+        clear()
+        messagebox.showinfo("Success","Employee updated successfully")
+
+
+def selection(event):
+    selected_item=tree.selection()
+    if selected_item:
+        row=tree.item(selected_item)["values"]
+        clear()
+        idEntry.insert(0, row[0])
+        nameEntry.insert(0, row[1])
+        roleBox.set(row[2])
+        phoneEntry.insert(0, row[3])
+        genderBox.set(row[4])
+        salaryEntry.insert(0, row[5])
+
+
+
+
+
+def clear():
+    idEntry.delete(0, END)
+    nameEntry.delete(0, END)
+    phoneEntry.delete(0, END)
+    salaryEntry.delete(0, END)
+    roleBox.set('web developer')
+    genderBox.set('Male')
+    salaryEntry.delete(0, END)
+
+
+
+
+
+def treeview_data():
+    employees=database.fetch_employees()
+    tree.delete(*tree.get_children())
+    for employee in employees:
+        tree.insert("",END,values=employee)
+
+
+
+
+
 
 def add_employee():
     if idEntry.get() == "" or nameEntry.get() == "" or phoneEntry.get() == "" or salaryEntry.get() == "":
         messagebox.showerror("Error", "Please fill in all fields")
+
+    elif database.id_exists(idEntry.get()):
+        messagebox.showerror("Error", "Employee ID already exists")
     else:
         database.insert(idEntry.get(), nameEntry.get(), roleBox.get(), phoneEntry.get(), genderBox.get(), salaryEntry.get())
-     
+        treeview_data()
+        clear()
+        messagebox.showinfo("Success", "Employee added successfully")
+
 
 
 
@@ -124,6 +180,7 @@ tree.column("Salary", width=150,anchor="center")
 
 style=ttk.Style()
 style.configure("Treeview.Heading", font=("Arial", 18, "bold"))
+style.configure("Treeview", font=("Arial", 14,'bold'),rowheight=30,background="sky blue",foreground="black")
 
 
 scrollbar=ttk.Scrollbar(rightFrame, orient=VERTICAL)
@@ -140,7 +197,7 @@ newButton.grid(row=0, column=0,pady=5)
 addButton=CTkButton(buttonFrame, text="Add Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15,command=add_employee)
 addButton.grid(row=0, column=1,pady=5,padx=5)
 
-updateButton=CTkButton(buttonFrame, text="Update Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15)
+updateButton=CTkButton(buttonFrame, text="Update Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15,command=update_employee)
 updateButton.grid(row=0, column=2,pady=5,padx=5)
 
 deleteButton=CTkButton(buttonFrame, text="Delete Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15)
@@ -151,8 +208,8 @@ deleteallButton.grid(row=0, column=4,pady=5,padx=5)
 
 
 
+treeview_data()
 
-
-
+window.bind('<ButtonRelease-1>',selection)
 
 window.mainloop()
