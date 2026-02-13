@@ -4,6 +4,22 @@ from tkinter import messagebox, ttk
 import database 
         # FUNTIONS
 
+def delete_all_employees():
+    result= messagebox.askyesno("Confirm", "Are you sure you want to delete all employees?")
+    if result:
+        database.deleteall_records()
+    else:
+        pass
+
+
+
+def show_all_employees():
+    treeview_data()
+    searchEntry.delete(0, END)
+    searchBox.set("Search by")
+
+
+
 def search_employee():
     if searchEntry.get() == "":
         messagebox.showerror("Error", "Please enter a search term")
@@ -92,6 +108,8 @@ def add_employee():
 
     elif database.id_exists(idEntry.get()):
         messagebox.showerror("Error", "Employee ID already exists")
+    elif not idEntry.get().startswith('EMP'):
+        messagebox.showerror("Error", "Employee ID must start with 'EMP'")
     else:
         database.insert(idEntry.get(), nameEntry.get(), roleBox.get(), phoneEntry.get(), genderBox.get(), salaryEntry.get())
         treeview_data()
@@ -113,16 +131,16 @@ window=CTk()
 window.title("Employee Management System")
 window.geometry("930x580+100+100")
 window.resizable(False, False)
-window.configure(fg_color="sky blue")
+window.configure(fg_color="black")
 
 
 
 
-logo=CTkImage(Image.open("ems.png"), size=(950, 165))
+logo=CTkImage(Image.open("bgpic.png"), size=(950, 165))
 logoLabel=CTkLabel(window, image=logo, text="")
 logoLabel.grid(row=0, column=0, columnspan=2)
 
-leftFrame=CTkFrame(window, fg_color="sky blue")
+leftFrame=CTkFrame(window, fg_color="black")
 leftFrame.grid(row=1, column=0)
 
 idLabel=CTkLabel(leftFrame, text="Employee ID", font=("Arial", 18,"bold"),text_color="white")
@@ -174,7 +192,7 @@ salaryEntry.grid(row=5, column=1)
 rightFrame=CTkFrame(window)
 rightFrame.grid(row=1, column=1)
 
-search_options = ["Search by ID", "Search by Name", "Search by Role", "Search by Gender", "Search by Salary"]
+search_options = ["ID", "Name", "Role", "Gender", "Salary"]
 searchBox=CTkComboBox(rightFrame, values=search_options, state="readonly")
 searchBox.grid(row=0, column=0)
 searchBox.set(search_options[0]) 
@@ -183,10 +201,10 @@ searchBox.set(search_options[0])
 searchEntry=CTkEntry(rightFrame)
 searchEntry.grid(row=0, column=1)
 
-searchButton=CTkButton(rightFrame, text="Search", width=100, command=search_employee)
+searchButton=CTkButton(rightFrame, text="Search", width=100,command=search_employee)
 searchButton.grid(row=0, column=2)
 
-showallButton=CTkButton(rightFrame, text="Show All", width=100)
+showallButton=CTkButton(rightFrame, text="Show All", width=100,command=show_all_employees)
 showallButton.grid(row=0, column=3,pady=10)
 
 
@@ -209,17 +227,19 @@ tree.column("Phone", width=150,anchor="center")
 tree.column("Gender", width=100,anchor="center")
 tree.column("Salary", width=150,anchor="center")
 
+
 style=ttk.Style()
 style.configure("Treeview.Heading", font=("Arial", 18, "bold"))
-style.configure("Treeview", font=("Arial", 14,'bold'),rowheight=30,background="sky blue",foreground="black")
+style.configure("Treeview", font=("Arial", 14,'bold'),rowheight=30,background="black",foreground="white")
 
 
-scrollbar=ttk.Scrollbar(rightFrame, orient=VERTICAL)
+scrollbar=ttk.Scrollbar(rightFrame, orient=VERTICAL,command=tree.yview)
 scrollbar.grid(row=1, column=4,sticky="ns")
 
+tree.configure(yscrollcommand=scrollbar.set)
 
-buttonFrame=CTkFrame(window,fg_color="sky blue")
-buttonFrame.grid(row=2, column=0, columnspan=2)
+buttonFrame=CTkFrame(window,fg_color="black")
+buttonFrame.grid(row=2, column=0, columnspan=2,pady=20)
 
 newButton=CTkButton(buttonFrame, text="New Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15,command=lambda: clear(True))
 newButton.grid(row=0, column=0,pady=5)
@@ -234,7 +254,7 @@ updateButton.grid(row=0, column=2,pady=5,padx=5)
 deleteButton=CTkButton(buttonFrame, text="Delete Employee" ,font=("Arial", 18, "bold"), width=160,corner_radius=15,command=delete_employee)
 deleteButton.grid(row=0, column=3,pady=5,padx=5)
 
-deleteallButton=CTkButton(buttonFrame, text="Delete All" ,font=("Arial", 18, "bold"), width=160,corner_radius=15)
+deleteallButton=CTkButton(buttonFrame, text="Delete All" ,font=("Arial", 18, "bold"), width=160,corner_radius=15,command=delete_all_employees)
 deleteallButton.grid(row=0, column=4,pady=5,padx=5)
 
 
