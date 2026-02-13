@@ -7,7 +7,7 @@ import database
 def delete_all_employees():
     result= messagebox.askyesno("Confirm", "Are you sure you want to delete all employees?")
     if result:
-        database.deleteall_records()
+        database.delete_all_records()
     else:
         pass
 
