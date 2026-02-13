@@ -1,10 +1,20 @@
-from customtkinter import *
 
+
+
+from customtkinter import *
 from PIL import Image
 from tkinter import messagebox
 # login.py
-from flask import Flask
-app = Flask(__name__)
+# from flask import Flask
+# import os
+# from flask import Flask, render_template, request, redirect, url_for
+# from flask_sqlalchemy import SQLAlchemy
+
+# app = Flask(__name__)
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # optional, avoids warnings
+# db = SQLAlchemy(app)
 
 def login():
     if usernameEntry.get() == "" or passwordEntry.get() == "":
@@ -44,5 +54,5 @@ loginButton=CTkButton(root, text="Login" ,cursor="hand2", command=login)
 loginButton.place(x=70, y=250)
 
 root.mainloop()
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
